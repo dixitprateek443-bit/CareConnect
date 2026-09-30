@@ -1,0 +1,26 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Launch Chrome (Full Stack - Port 8080)",
+            "type": "chrome",
+            "request": "launch",
+            "url": "http://localhost:8080",
+            "webRoot": "${workspaceFolder}/careconnect-backend/src/main/resources/static"
+        },
+        {
+            "name": "Launch Chrome (Frontend Server - Port 4200)",
+            "type": "chrome",
+            "request": "launch",
+            "url": "http://localhost:4200",
+            "webRoot": "${workspaceFolder}/careconnect-frontend"
+        },
+        {
+            "name": "Launch Chrome (H2 Database Console - Port 8080)",
+            "type": "chrome",
+            "request": "launch",
+            "url": "http://localhost:8080/h2-console",
+            "webRoot": "${workspaceFolder}"
+        }
+    ]
+}

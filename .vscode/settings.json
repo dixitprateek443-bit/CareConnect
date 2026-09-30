@@ -1,0 +1,6 @@
+{
+    "liveServer.settings.port": 5500,
+    "liveServer.settings.root": "/careconnect-frontend",
+    "liveServer.settings.donotShowInfoMsg": true,
+    "liveServer.settings.CustomBrowser": "chrome"
+}

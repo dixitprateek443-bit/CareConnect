@@ -1,0 +1,57 @@
+# ==============================================================================
+# CareConnect - Git Ignore Configuration
+# ==============================================================================
+
+# Compiled Java & Maven Build Outputs
+**/target/
+*.class
+*.jar
+*.war
+*.ear
+*.nar
+*.zip
+*.tar.gz
+*.rar
+
+# Node / Frontend Dependencies & Builds
+**/node_modules/
+**/dist/
+**/.angular/
+package-lock.json
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Database & Log Files
+*.log
+logs/
+*.mv.db
+*.trace.db
+*.db
+/data/
+
+# IDE & Editor Settings
+.idea/
+*.iml
+*.iws
+*.ipr
+.project
+.classpath
+.settings/
+.vscode/*
+!.vscode/settings.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# Operating System Files
+.DS_Store
+Thumbs.db
+ehthumbs.db
+[Dd]esktop.ini
+
+# Temporary & Swap Files
+*.tmp
+*.temp
+*.swp
+*~

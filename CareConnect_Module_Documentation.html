@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CareConnect - Software Module Documentation</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+
+        :root {
+            --primary: #0284c7;
+            --primary-dark: #0369a1;
+            --primary-light: #e0f2fe;
+            --secondary: #0f172a;
+            --text-main: #334155;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --bg-card: #f8fafc;
+            --success: #16a34a;
+            --warning: #d97706;
+            --danger: #dc2626;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            color: var(--text-main);
+            background: #ffffff;
+            line-height: 1.6;
+            padding: 40px;
+            font-size: 13.5px;
+        }
+
+        @media print {
+            body {
+                padding: 20px;
+                font-size: 12px;
+            }
+            .page-break {
+                page-break-before: always;
+            }
+            .no-print {
+                display: none;
+            }
+            @page {
+                margin: 1.5cm;
+                size: A4;
+            }
+        }
+
+        .cover-page {
+            min-height: 85vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            border: 2px solid var(--border);
+            padding: 60px 50px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #ffffff 0%, #f0f9ff 100%);
+            margin-bottom: 40px;
+        }
+
+        .cover-header {
+            border-bottom: 3px solid var(--primary);
+            padding-bottom: 25px;
+        }
+
+        .project-badge {
+            display: inline-block;
+            background: var(--primary-light);
+            color: var(--primary-dark);
+            font-weight: 700;
+            font-size: 12px;
+            padding: 6px 14px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+        }
+
+        h1.title {
+            font-size: 36px;
+            font-weight: 800;
+            color: var(--secondary);
+            letter-spacing: -0.5px;
+            line-height: 1.2;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 18px;
+            color: var(--primary-dark);
+            font-weight: 500;
+        }
+
+        .cover-meta {
+            margin-top: 40px;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            background: #ffffff;
+            padding: 25px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+        }
+
+        .meta-item strong {
+            display: block;
+            font-size: 11px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+
+        .meta-item span {
+            font-size: 14px;
+            color: var(--secondary);
+            font-weight: 600;
+        }
+
+        .cover-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid var(--border);
+            padding-top: 20px;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        /* Section Headings */
+        h2.section-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--secondary);
+            border-left: 4px solid var(--primary);
+            padding-left: 12px;
+            margin: 35px 0 16px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        h3.sub-section-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--primary-dark);
+            margin: 20px 0 10px 0;
+        }
+
+        p {
+            margin-bottom: 12px;
+            color: var(--text-main);
+        }
+
+        /* Modules Grid & Cards */
+        .module-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+        }
+
+        .module-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 10px;
+        }
+
+        .module-id {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            background: var(--primary);
+            color: white;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+        }
+
+        .module-name {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--secondary);
+            flex: 1;
+            margin-left: 12px;
+        }
+
+        .role-badge {
+            font-size: 11px;
+            font-weight: 600;
+            padding: 3px 9px;
+            border-radius: 12px;
+            background: #e2e8f0;
+            color: #334155;
+        }
+
+        .role-admin { background: #fee2e2; color: #991b1b; }
+        .role-doctor { background: #e0e7ff; color: #3730a3; }
+        .role-patient { background: #dcfce7; color: #166534; }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0 25px 0;
+            font-size: 12.5px;
+        }
+
+        table th {
+            background: #f1f5f9;
+            color: var(--secondary);
+            text-align: left;
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            font-weight: 600;
+        }
+
+        table td {
+            padding: 9px 12px;
+            border: 1px solid var(--border);
+            vertical-align: top;
+        }
+
+        table tr:nth-child(even) td {
+            background: #fafafa;
+        }
+
+        code {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11.5px;
+            background: #f1f5f9;
+            color: #d946ef;
+            padding: 2px 6px;
+            border-radius: 4px;
+            border: 1px solid #e2e8f0;
+        }
+
+        /* Flow Diagrams */
+        .flow-diagram {
+            background: #0f172a;
+            color: #f8fafc;
+            padding: 18px 24px;
+            border-radius: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            line-height: 1.5;
+            overflow-x: auto;
+            margin: 15px 0 25px 0;
+        }
+
+        .flow-diagram span.step { color: #38bdf8; font-weight: bold; }
+        .flow-diagram span.arrow { color: #f59e0b; }
+        .flow-diagram span.status { color: #4ade80; }
+
+        ul, ol {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+
+        li {
+            margin-bottom: 6px;
+        }
+
+        .feature-list {
+            list-style: none;
+            margin-left: 0;
+        }
+
+        .feature-list li {
+            position: relative;
+            padding-left: 20px;
+            margin-bottom: 6px;
+        }
+
+        .feature-list li::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: var(--success);
+            font-weight: bold;
+        }
+
+        .highlight-box {
+            background: #f0fdf4;
+            border-left: 4px solid var(--success);
+            padding: 12px 16px;
+            border-radius: 4px;
+            margin: 15px 0;
+            font-size: 13px;
+        }
+
+        .viva-box {
+            background: #eff6ff;
+            border-left: 4px solid var(--primary);
+            padding: 14px 18px;
+            border-radius: 4px;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- COVER PAGE -->
+    <div class="cover-page">
+        <div class="cover-header">
+            <span class="project-badge">College Project Documentation</span>
+            <h1 class="title">CareConnect</h1>
+            <div class="subtitle">Patient Record & Healthcare Management System</div>
+            <p style="margin-top: 10px; color: var(--text-muted); font-size: 14px;">
+                Comprehensive Software Requirements & System Modules Specification
+            </p>
+        </div>
+
+        <div class="cover-meta">
+            <div class="meta-item">
+                <strong>Project Type</strong>
+                <span>Full Stack Enterprise Web Application</span>
+            </div>
+            <div class="meta-item">
+                <strong>Backend Framework</strong>
+                <span>Java & Spring Boot 3.x (Spring Web, Data JPA, Security)</span>
+            </div>
+            <div class="meta-item">
+                <strong>Frontend Framework</strong>
+                <span>Angular (TypeScript, RxJS, Modern UI)</span>
+            </div>
+            <div class="meta-item">
+                <strong>Database Engine</strong>
+                <span>Oracle DB (Oracle 19c / 21c / 23c XE)</span>
+            </div>
+            <div class="meta-item">
+                <strong>Target Academic Level</strong>
+                <span>B.Tech / B.E. / BCA / MCA Final/Semester Project</span>
+            </div>
+            <div class="meta-item">
+                <strong>Documentation Version</strong>
+                <span>1.0 (Viva & Evaluation Ready)</span>
+            </div>
+        </div>
+
+        <div class="cover-footer">
+            <span>Confidential & Academic Submission Material</span>
+            <span>Academic Year 2024–2025 / 2025–2026</span>
+        </div>
+    </div>
+
+    <!-- PAGE BREAK -->
+    <div class="page-break"></div>
+
+    <!-- 1. EXECUTIVE SUMMARY & OBJECTIVES -->
+    <h2 class="section-title">1. Executive Summary & Project Objectives</h2>
+    <p>
+        <strong>CareConnect</strong> is an integrated enterprise-grade Electronic Health Record (EHR) and Patient Management solution designed to digitize outpatient clinical workflows. The software bridges the communication gap between patients, healthcare professionals, and clinic administration by providing secure medical record tracking, digital appointments, and tamper-proof electronic prescriptions.
+    </p>
+
+    <div class="highlight-box">
+        <strong>Core Mission:</strong> To replace disorganized physical paper files with a centralized, role-protected digital record system backed by a high-availability Oracle Database and enterprise Spring Boot & Angular architecture.
+    </div>
+
+    <h3 class="sub-section-title">Key Objectives for Academic Evaluation:</h3>
+    <ul class="feature-list">
+        <li><strong>Role-Based Access Control (RBAC):</strong> Strict separation between Administrative, Clinical (Doctor), and Patient operations.</li>
+        <li><strong>Unified Patient Dossier:</strong> Instant chronological retrieval of past diagnoses, vitals, allergies, and drug histories.</li>
+        <li><strong>Lifecycle-Driven Appointments:</strong> State machine tracking from initial booking to consultation completion.</li>
+        <li><strong>Standardized E-Prescriptions:</strong> Legible, digital prescription authoring with dosage, frequency, and instructions.</li>
+        <li><strong>Enterprise Architecture:</strong> Powered by Java, Spring Boot, Angular components, and Oracle Database persistence.</li>
+        <li><strong>Interactive OpenAPI / Swagger Documentation:</strong> Direct API demonstration capability for viva panels.</li>
+    </ul>
+
+    <!-- 2. HIGH-LEVEL ARCHITECTURE -->
+    <h2 class="section-title">2. System Architecture & Tech Stack</h2>
+    <p>The application follows a decoupled <strong>Client-Server (N-Tier)</strong> architecture adhering to RESTful principles:</p>
+
+    <div class="flow-diagram">
+[ Angular Client (TypeScript/RxJS) ] <span class="arrow">─── HTTPS / REST (JSON) ───▶</span> [ Spring Boot 3 Controller ]
+                                                                             │
+                                                                     [ Service Layer ] (Business Logic)
+                                                                             │
+                                                                   [ Spring Data JPA ] (Hibernate)
+                                                                             │
+                                                                   [ Oracle DB (ojdbc11) ]
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Tier</th>
+                <th>Technology</th>
+                <th>Justification & Role in Project</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Client (Frontend)</strong></td>
+                <td>Angular (TypeScript, HTML5, CSS3)</td>
+                <td>Robust single-page application framework with strong typing, two-way data binding, dependency injection, and reusable components.</td>
+            </tr>
+            <tr>
+                <td><strong>API & Business Logic</strong></td>
+                <td>Java (JDK 17/21/26), Spring Boot 3.x</td>
+                <td>Industry-standard enterprise backend. Dependency Injection, high throughput, and robust ecosystem.</td>
+            </tr>
+            <tr>
+                <td><strong>Security & Auth</strong></td>
+                <td>Spring Security + JWT</td>
+                <td>Stateless authentication using Bearer tokens. Protects medical records from unauthorized access.</td>
+            </tr>
+            <tr>
+                <td><strong>Data Persistence</strong></td>
+                <td>Spring Data JPA (Hibernate)</td>
+                <td>Entity-relational mapping, automatic schema generation, and query optimization using Oracle Dialect.</td>
+            </tr>
+            <tr>
+                <td><strong>Database Engine</strong></td>
+                <td>Oracle DB (ojdbc11 driver)</td>
+                <td>High-performance, ACID-compliant relational enterprise database for mission-critical healthcare records and audit trails.</td>
+            </tr>
+            <tr>
+                <td><strong>API Documentation</strong></td>
+                <td>Springdoc OpenAPI (Swagger UI)</td>
+                <td>Interactive web documentation to test and present all endpoints live to evaluators.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- PAGE BREAK -->
+    <div class="page-break"></div>
+
+    <!-- 3. DETAILED MODULES BREAKDOWN -->
+    <h2 class="section-title">3. Detailed Functional Modules Breakdown</h2>
+    <p>To keep the project clean, manageable, and highly demonstrable during college defense, the system is organized into <strong>4 Essential Functional Modules</strong>:</p>
+
+    <!-- MODULE 1 -->
+    <div class="module-card">
+        <div class="module-header">
+            <span class="module-id">MODULE 01</span>
+            <span class="module-name">User Authentication & Role-Based Access Control (RBAC)</span>
+            <span class="role-badge role-admin">Security Core</span>
+        </div>
+        <p><strong>Purpose:</strong> Secures the system, handles user authentication, and strictly isolates patient privacy and doctor operations based on roles.</p>
+        
+        <h3 class="sub-section-title">Functional Features:</h3>
+        <ul class="feature-list">
+            <li><strong>Multi-Role Registration & Login:</strong> Separate onboarding flows for Patients, Doctors, and Receptionist/Admin.</li>
+            <li><strong>Stateless JWT Security:</strong> Generates a signed JSON Web Token upon successful credential verification.</li>
+            <li><strong>Role Gatekeepers:</strong> Endpoints are secured using annotations such as <code>@PreAuthorize("hasRole('DOCTOR')")</code>.</li>
+            <li><strong>Password Hashing:</strong> BCrypt algorithm with salted rounds ensures zero plaintext password storage.</li>
+        </ul>
+
+        <h3 class="sub-section-title">Endpoints Covered:</h3>
+        <table>
+            <tr><th>Method</th><th>Endpoint</th><th>Role</th><th>Description</th></tr>
+            <tr><td><code>POST</code></td><td><code>/api/auth/register</code></td><td>Public</td><td>Register a new patient account</td></tr>
+            <tr><td><code>POST</code></td><td><code>/api/auth/login</code></td><td>Public</td><td>Verify credentials & issue JWT token</td></tr>
+            <tr><td><code>GET</code></td><td><code>/api/auth/me</code></td><td>Authenticated</td><td>Retrieve current user profile & role</td></tr>
+        </table>
+    </div>
+
+    <!-- MODULE 2 -->
+    <div class="module-card">
+        <div class="module-header">
+            <span class="module-id">MODULE 02</span>
+            <span class="module-name">Patient Health Records & Demographics (EHR)</span>
+            <span class="role-badge role-patient">Patient & Doctor</span>
+        </div>
+        <p><strong>Purpose:</strong> Stores clinical baseline data, vital statistics, emergency contact details, and chronic health history.</p>
+        
+        <h3 class="sub-section-title">Functional Features:</h3>
+        <ul class="feature-list">
+            <li><strong>Patient Profile:</strong> Tracks Date of Birth, Gender, Blood Group (A+, B+, O+, etc.), Contact Info, and Emergency Contact.</li>
+            <li><strong>Clinical Vitals Tracker:</strong> Records Height, Weight, Blood Pressure, Pulse, and Known Allergies (e.g., Penicillin, Peanuts).</li>
+            <li><strong>Timeline View:</strong> Shows historical timeline of all past hospital encounters, diagnoses, and lab summaries.</li>
+            <li><strong>Patient Privacy Protection:</strong> Patients can view only their own records; doctors can view records of assigned patients.</li>
+        </ul>
+
+        <h3 class="sub-section-title">Endpoints Covered:</h3>
+        <table>
+            <tr><th>Method</th><th>Endpoint</th><th>Role</th><th>Description</th></tr>
+            <tr><td><code>GET</code></td><td><code>/api/patients/profile</code></td><td>Patient</td><td>Get logged-in patient's complete medical file</td></tr>
+            <tr><td><code>PUT</code></td><td><code>/api/patients/profile</code></td><td>Patient</td><td>Update personal contact details and vitals</td></tr>
+            <tr><td><code>GET</code></td><td><code>/api/patients/{id}/records</code></td><td>Doctor/Admin</td><td>Doctor retrieves patient's history during consultation</td></tr>
+        </table>
+    </div>
+
+    <!-- PAGE BREAK -->
+    <div class="page-break"></div>
+
+    <!-- MODULE 3 -->
+    <div class="module-card">
+        <div class="module-header">
+            <span class="module-id">MODULE 03</span>
+            <span class="module-name">Appointment Scheduling & Consultation Lifecycle</span>
+            <span class="role-badge role-doctor">Interactive Engine</span>
+        </div>
+        <p><strong>Purpose:</strong> Coordinates patient booking requests, doctor schedules, and tracks consultation stages from start to finish.</p>
+        
+        <h3 class="sub-section-title">Appointment Lifecycle State Machine:</h3>
+        <div class="flow-diagram">
+[ Patient Books ] <span class="arrow">──▶</span> <span class="step">[ PENDING ]</span> <span class="arrow">──(Doctor Accepts)──▶</span> <span class="step">[ CONFIRMED ]</span>
+                                                               │
+                                                       (Consultation Done)
+                                                               │
+                                                               ▼
+                                                     <span class="status">[ COMPLETED ]</span> (Prescription linked)
+        *(Also supports <span style="color:#ef4444">[ CANCELLED ]</span> state with audit reason)*
+        </div>
+
+        <h3 class="sub-section-title">Functional Features:</h3>
+        <ul class="feature-list">
+            <li><strong>Doctor Directory & Specialty Search:</strong> Filter doctors by department (General Medicine, Cardiology, Pediatrics, etc.).</li>
+            <li><strong>Slot Reservation:</strong> Patient selects doctor, preferred date, time slot, and reason for consultation.</li>
+            <li><strong>Doctor Workstation:</strong> Doctor views calendar list of queued patients with real-time status badges.</li>
+            <li><strong>One-Click Status Updates:</strong> Doctor can confirm, begin, or complete appointments directly from dashboard.</li>
+        </ul>
+
+        <h3 class="sub-section-title">Endpoints Covered:</h3>
+        <table>
+            <tr><th>Method</th><th>Endpoint</th><th>Role</th><th>Description</th></tr>
+            <tr><td><code>GET</code></td><td><code>/api/doctors</code></td><td>Public / Auth</td><td>List doctors with qualifications, fees & specialty</td></tr>
+            <tr><td><code>POST</code></td><td><code>/api/appointments/book</code></td><td>Patient</td><td>Create appointment booking request</td></tr>
+            <tr><td><code>GET</code></td><td><code>/api/appointments/my</code></td><td>Patient/Doctor</td><td>Get appointments filtered by user role</td></tr>
+            <tr><td><code>PATCH</code></td><td><code>/api/appointments/{id}/status</code></td><td>Doctor</td><td>Update status (CONFIRMED / COMPLETED / CANCELLED)</td></tr>
+        </table>
+    </div>
+
+    <!-- MODULE 4 -->
+    <div class="module-card">
+        <div class="module-header">
+            <span class="module-id">MODULE 04</span>
+            <span class="module-name">Clinical Diagnosis & E-Prescription Generator</span>
+            <span class="role-badge role-doctor">Clinical Output</span>
+        </div>
+        <p><strong>Purpose:</strong> Enables doctors to record consultation diagnoses and issue clean, structured digital prescriptions with printable view.</p>
+        
+        <h3 class="sub-section-title">Functional Features:</h3>
+        <ul class="feature-list">
+            <li><strong>Structured Medication Entry:</strong> Drug name, dosage (e.g., 500mg), frequency (1-0-1), duration (5 days), and intake instruction (After food).</li>
+            <li><strong>Clinical Notes & Advice:</strong> Doctor adds clinical observations, dietary suggestions, and recommended lab investigations.</li>
+            <li><strong>Printable Prescription View:</strong> Clean hospital-header layout ready for browser 1-click printing or PDF export.</li>
+            <li><strong>Immutable Record:</strong> Once issued and appointment marked completed, prescription is permanently preserved in patient history.</li>
+        </ul>
+
+        <h3 class="sub-section-title">Endpoints Covered:</h3>
+        <table>
+            <tr><th>Method</th><th>Endpoint</th><th>Role</th><th>Description</th></tr>
+            <tr><td><code>POST</code></td><td><code>/api/prescriptions</code></td><td>Doctor</td><td>Create & issue prescription for an appointment</td></tr>
+            <tr><td><code>GET</code></td><td><code>/api/prescriptions/{appointmentId}</code></td><td>Doctor/Patient</td><td>View prescription details for a specific visit</td></tr>
+            <tr><td><code>GET</code></td><td><code>/api/prescriptions/patient/history</code></td><td>Patient</td><td>Patient views all past prescriptions</td></tr>
+        </table>
+    </div>
+
+    <!-- PAGE BREAK -->
+    <div class="page-break"></div>
+
+    <!-- 4. DATABASE ENTITY-RELATIONSHIP DESIGN -->
+    <h2 class="section-title">4. Database Schema (5 Essential Entities)</h2>
+    <p>To avoid over-engineering while maintaining relational integrity, the database uses 5 well-normalized tables:</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Table Name</th>
+                <th>Primary Key</th>
+                <th>Foreign Keys</th>
+                <th>Key Columns & Data Types</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>users</code></td>
+                <td><code>id (BIGINT)</code></td>
+                <td>-</td>
+                <td><code>name (VARCHAR)</code>, <code>email (VARCHAR UNIQUE)</code>, <code>password (VARCHAR)</code>, <code>role (ENUM: ADMIN, DOCTOR, PATIENT)</code></td>
+            </tr>
+            <tr>
+                <td><code>patients</code></td>
+                <td><code>id (BIGINT)</code></td>
+                <td><code>user_id ➔ users(id)</code></td>
+                <td><code>dob (DATE)</code>, <code>gender (VARCHAR)</code>, <code>blood_group (VARCHAR)</code>, <code>phone (VARCHAR)</code>, <code>allergies (TEXT)</code></td>
+            </tr>
+            <tr>
+                <td><code>doctors</code></td>
+                <td><code>id (BIGINT)</code></td>
+                <td><code>user_id ➔ users(id)</code></td>
+                <td><code>specialization (VARCHAR)</code>, <code>qualification (VARCHAR)</code>, <code>consultation_fee (DECIMAL)</code>, <code>available_days (VARCHAR)</code></td>
+            </tr>
+            <tr>
+                <td><code>appointments</code></td>
+                <td><code>id (BIGINT)</code></td>
+                <td>
+                    <code>patient_id ➔ patients(id)</code><br>
+                    <code>doctor_id ➔ doctors(id)</code>
+                </td>
+                <td><code>appointment_date (DATETIME)</code>, <code>reason (TEXT)</code>, <code>status (ENUM: PENDING, CONFIRMED, COMPLETED, CANCELLED)</code></td>
+            </tr>
+            <tr>
+                <td><code>prescriptions</code></td>
+                <td><code>id (BIGINT)</code></td>
+                <td><code>appointment_id ➔ appointments(id)</code></td>
+                <td><code>diagnosis (VARCHAR)</code>, <code>medicines (JSON / TEXT)</code>, <code>doctor_notes (TEXT)</code>, <code>created_at (TIMESTAMP)</code></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- 5. COLLEGE VIVA DEMO SCRIPT -->
+    <h2 class="section-title">5. College Viva Presentation & Demonstration Script</h2>
+    <p>Follow this exact 5-step live execution plan during your project evaluation to score top marks:</p>
+
+    <div class="viva-box">
+        <ol style="margin-left: 20px; line-height: 1.8;">
+            <li><strong>Step 1: Admin / System Overview (1 Min)</strong>
+                <br>Log into Admin portal. Show the dashboard metrics: Total registered doctors, active patients, and pending appointments. Show database seeding.
+            </li>
+            <li><strong>Step 2: Patient Registration & Booking (1.5 Min)</strong>
+                <br>Register a test patient (e.g., <em>"John Doe"</em>). Update health vitals (Blood Group: O+, Allergies: Penicillin). Browse doctor directory, choose Dr. Smith (Cardiologist), and book a slot for today. Status turns to <span class="role-badge" style="background:#fef3c7; color:#92400e;">PENDING</span>.
+            </li>
+            <li><strong>Step 3: Doctor Consultation & Prescription (1.5 Min)</strong>
+                <br>Log in as Dr. Smith. Show incoming consultation queue. Doctor opens John Doe's profile, reviews past health history, and clicks <strong>"Accept & Start Consultation"</strong>. Status updates to <span class="role-badge" style="background:#e0e7ff; color:#3730a3;">CONFIRMED</span>.
+            </li>
+            <li><strong>Step 4: Prescription Authoring & Printable Output (1 Min)</strong>
+                <br>Doctor types Diagnosis: <em>"Mild Hypertension"</em>. Adds medication: <em>"Amlodipine 5mg - Once Daily - 15 Days"</em>. Clicks <strong>"Issue Prescription & Complete Visit"</strong>.
+            </li>
+            <li><strong>Step 5: Patient Receipt & Swagger API Verification (1 Min)</strong>
+                <br>Switch to Patient view: show the completed visit with the generated prescription and click <strong>"Print Prescription"</strong>. Open <code>http://localhost:8080/swagger-ui.html</code> to show backend REST endpoints to the viva examiner.
+            </li>
+        </ol>
+    </div>
+
+    <div style="margin-top: 35px; border-top: 2px solid var(--border); padding-top: 20px; text-align: center; color: var(--text-muted); font-size: 12px;">
+        CareConnect &bull; Patient Record & Management System &bull; Academic Module Specification
+    </div>
+
+</body>
+</html>
