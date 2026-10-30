@@ -2,6 +2,11 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 
+const dns = require('dns');
+if (dns.setDefaultResultOrder) {
+  dns.setDefaultResultOrder('ipv4first');
+}
+
 const PORT = process.env.PORT || 5500;
 const PUBLIC_DIR = __dirname;
 
@@ -28,6 +33,34 @@ const server = http.createServer((req, res) => {
   }
 
   let reqPath = req.url.split('?')[0];
+
+  // Proxy API and H2 console requests to Spring Boot backend on port 8080 (127.0.0.1 IPv4)
+  if (reqPath.startsWith('/api') || reqPath.startsWith('/h2-console')) {
+    const proxyHeaders = { ...req.headers, host: '127.0.0.1:8080' };
+    const proxyReq = http.request({
+      hostname: '127.0.0.1',
+      port: 8080,
+      path: req.url,
+      method: req.method,
+      headers: proxyHeaders,
+      timeout: 15000
+    }, (proxyRes) => {
+      res.writeHead(proxyRes.statusCode, proxyRes.headers);
+      proxyRes.pipe(res, { end: true });
+    });
+    proxyReq.on('error', (err) => {
+      res.writeHead(502, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'Backend unreachable. Ensure Spring Boot is running on port 8080.' }));
+    });
+    proxyReq.on('timeout', () => {
+      proxyReq.destroy();
+      res.writeHead(504, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'Gateway timeout connecting to Spring Boot backend.' }));
+    });
+    req.pipe(proxyReq, { end: true });
+    return;
+  }
+
   if (reqPath === '/') reqPath = '/index.html';
 
   let filePath = path.join(PUBLIC_DIR, reqPath);

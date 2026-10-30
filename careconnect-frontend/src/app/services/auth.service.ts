@@ -24,7 +24,7 @@ export class AuthService {
 
   login(credentials: { email: string; password: string; role: UserRole }): Observable<User> {
     return this.http.post<User>(`${this.API_URL}/login`, credentials).pipe(
-      tap(user => {
+      tap((user: User) => {
         localStorage.setItem('careconnect_auth_user', JSON.stringify(user));
         this.currentUserSubject.next(user);
       })
@@ -33,7 +33,7 @@ export class AuthService {
 
   registerPatient(data: Partial<PatientProfile> & { password: string }): Observable<User> {
     return this.http.post<User>(`${this.API_URL}/register/patient`, data).pipe(
-      tap(user => {
+      tap((user: User) => {
         localStorage.setItem('careconnect_auth_user', JSON.stringify(user));
         this.currentUserSubject.next(user);
       })

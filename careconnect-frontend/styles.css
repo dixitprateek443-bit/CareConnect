@@ -1421,6 +1421,19 @@ body {
   font-size: 12px;
   font-weight: 600;
   color: var(--text-muted);
+  transition: color 0.3s ease;
+}
+
+.status-indicator.clickable {
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 6px;
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px dashed rgba(239, 68, 68, 0.3);
+}
+
+.status-indicator.clickable:hover {
+  background: rgba(239, 68, 68, 0.15);
 }
 
 .status-dot {
@@ -1429,6 +1442,23 @@ body {
   background: var(--success);
   border-radius: 50%;
   box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+  transition: all 0.3s ease;
+}
+
+.status-dot.reconnecting {
+  background: #f59e0b;
+  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.25);
+  animation: pulse-dot 1.2s infinite ease-in-out;
+}
+
+.status-dot.offline {
+  background: var(--danger);
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.25);
+}
+
+@keyframes pulse-dot {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.3); opacity: 0.6; }
 }
 
 .viva-note {
@@ -1542,7 +1572,6 @@ body {
   border-radius: var(--radius-sm);
   padding: 16px;
 }
-.report-meta-cell {}
 .report-meta-label {
   font-size: 11px;
   font-weight: 700;

@@ -30,7 +30,8 @@ public class AuthService {
     }
 
     public AuthResponse login(AuthRequest request) {
-        Optional<User> userOpt = userRepository.findByEmail(request.getEmail().trim().toLowerCase());
+        String email = request.getEmail() != null ? request.getEmail().trim().toLowerCase() : "";
+        Optional<User> userOpt = userRepository.findByEmail(email);
         if (userOpt.isEmpty() || !userOpt.get().getPassword().equals(request.getPassword())) {
             throw new IllegalArgumentException("Invalid email or password");
         }
@@ -40,9 +41,21 @@ public class AuthService {
         Long patientId = null;
 
         if (user.getRole() == Role.DOCTOR) {
-            doctorId = doctorRepository.findByUser(user).map(Doctor::getId).orElse(null);
+            doctorId = doctorRepository.findByUserId(user.getId())
+                    .or(() -> doctorRepository.findByUser(user))
+                    .map(Doctor::getId)
+                    .orElseGet(() -> {
+                        Doctor newDoc = new Doctor(user, "General Medicine", "MBBS, MD", "5+ Years", "$75", "Mon - Fri, 09:00 - 17:00", "Specialist physician dedicated to comprehensive patient care.");
+                        return doctorRepository.save(newDoc).getId();
+                    });
         } else if (user.getRole() == Role.PATIENT) {
-            patientId = patientRepository.findByUser(user).map(Patient::getId).orElse(null);
+            patientId = patientRepository.findByUserId(user.getId())
+                    .or(() -> patientRepository.findByUser(user))
+                    .map(Patient::getId)
+                    .orElseGet(() -> {
+                        Patient newPat = new Patient(user, 30, "Not Specified", "O+", "None Reported", user.getPhone() != null ? user.getPhone() : "Not Provided");
+                        return patientRepository.save(newPat).getId();
+                    });
         }
 
         String token = "CARE-" + UUID.randomUUID().toString().substring(0, 18).toUpperCase();
@@ -63,26 +76,24 @@ public class AuthService {
         Long patientId = null;
 
         if (request.getRole() == Role.DOCTOR) {
-            Doctor doc = new Doctor(
-                    user,
-                    request.getSpecialization() != null ? request.getSpecialization() : "General Medicine",
-                    request.getQualification() != null ? request.getQualification() : "MBBS, MD",
-                    request.getExperience() != null ? request.getExperience() : "5+ Years",
-                    request.getFee() != null ? request.getFee() : "$75",
-                    request.getAvailableDays() != null ? request.getAvailableDays() : "Mon - Fri, 09:00 - 17:00",
-                    request.getBio() != null ? request.getBio() : "Specialist physician dedicated to comprehensive patient care."
-            );
+            String spec = (request.getSpecialization() != null && !request.getSpecialization().trim().isEmpty()) ? request.getSpecialization().trim() : "General Medicine";
+            String qual = (request.getQualification() != null && !request.getQualification().trim().isEmpty()) ? request.getQualification().trim() : "MBBS, MD";
+            String exp  = (request.getExperience() != null && !request.getExperience().trim().isEmpty()) ? request.getExperience().trim() : "5+ Years";
+            String fee  = (request.getFee() != null && !request.getFee().trim().isEmpty()) ? request.getFee().trim() : "$75";
+            String days = (request.getAvailableDays() != null && !request.getAvailableDays().trim().isEmpty()) ? request.getAvailableDays().trim() : "Mon - Fri, 09:00 - 17:00";
+            String bio  = (request.getBio() != null && !request.getBio().trim().isEmpty()) ? request.getBio().trim() : "Specialist physician dedicated to comprehensive patient care.";
+
+            Doctor doc = new Doctor(user, spec, qual, exp, fee, days, bio);
             doc = doctorRepository.save(doc);
             doctorId = doc.getId();
         } else if (request.getRole() == Role.PATIENT) {
-            Patient pat = new Patient(
-                    user,
-                    request.getAge() != null ? request.getAge() : 30,
-                    request.getGender() != null ? request.getGender() : "Not Specified",
-                    request.getBloodGroup() != null ? request.getBloodGroup() : "O+",
-                    request.getAllergies() != null ? request.getAllergies() : "None Reported",
-                    request.getEmergencyContact() != null ? request.getEmergencyContact() : request.getPhone()
-            );
+            int age = (request.getAge() != null && request.getAge() > 0) ? request.getAge() : 30;
+            String gender = (request.getGender() != null && !request.getGender().trim().isEmpty()) ? request.getGender().trim() : "Not Specified";
+            String blood = (request.getBloodGroup() != null && !request.getBloodGroup().trim().isEmpty()) ? request.getBloodGroup().trim() : "O+";
+            String allergies = (request.getAllergies() != null && !request.getAllergies().trim().isEmpty()) ? request.getAllergies().trim() : "None Reported";
+            String emergency = (request.getEmergencyContact() != null && !request.getEmergencyContact().trim().isEmpty()) ? request.getEmergencyContact().trim() : (request.getPhone() != null ? request.getPhone().trim() : "Not Provided");
+
+            Patient pat = new Patient(user, age, gender, blood, allergies, emergency);
             pat = patientRepository.save(pat);
             patientId = pat.getId();
         }

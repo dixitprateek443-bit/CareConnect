@@ -17,7 +17,7 @@
   <!-- NAVIGATION HEADER -->
   <header class="navbar">
     <div class="nav-container">
-      <a href="#" class="brand" onclick="navigateTo('home')">
+      <a href="#" class="brand" onclick="route('home')">
         <div class="brand-icon">
           <i class="fa-solid fa-heart-pulse"></i>
         </div>
@@ -60,8 +60,8 @@
         <p>Enterprise Patient Record & Hospital Management System. Secure Digital Healthcare & EHR Platform.</p>
       </div>
       <div class="footer-right">
-        <div class="status-indicator">
-          <span class="status-dot"></span> System Operational
+        <div class="status-indicator" id="systemStatusIndicator" onclick="checkBackendHealth(true)" title="Click to test backend connection">
+          <span class="status-dot" id="systemStatusDot"></span> <span id="systemStatusText">System Operational</span>
         </div>
         <div class="viva-note">Prepared for College Examination & Project Defense</div>
       </div>
